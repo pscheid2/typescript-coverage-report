@@ -13,6 +13,7 @@ type TypeCoverageConfig = {
   cache?: boolean;
   project?: string;
   ignoreFiles?: boolean;
+  includeFiles?: boolean;
   ignoreCatch?: boolean;
   ignoreUnread?: boolean;
 };
@@ -49,6 +50,7 @@ const {
   cache = false,
   project = ".",
   ignoreFiles = false,
+  includeFiles = false,
   ignoreCatch = false,
   ignoreUnread = false
 } = typeCoverage;
@@ -85,6 +87,11 @@ program
     ignoreFiles
   )
   .option(
+    "-f, --include-files [string]",
+    'include specified files in the coverage report (space separated), eg: --include-files "demo1/bar.ts demo2/foo.ts"',
+    includeFiles
+  )
+  .option(
     "--ignore-catch [boolean]",
     "ignore type any for (try-)catch clause variable",
     ignoreCatch
@@ -105,6 +112,7 @@ const options: ProgramOptions = {
   debug: program.debug,
   cache: program.cache,
   ignoreFiles: program.ignoreFiles,
+  includeFiles: program.includeFiles,
   ignoreCatch: program.ignoreCatch,
   ignoreUnread: program.ignoreUnread
 };

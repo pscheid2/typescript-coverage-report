@@ -13,6 +13,7 @@ const asyncNcp = promisify(ncp);
 export type ProgramOptions = Options & {
   outputDir: string;
   threshold: number;
+  includeFiles?: string;
 };
 
 export default async function generateCoverageReport(
@@ -31,7 +32,21 @@ export default async function generateCoverageReport(
     cache: options.cache
   });
 
-  console.log(generateText(data, options.threshold));
+  let filteredFileCounts = data.fileCounts;
+  if (options.includeFiles != null) {
+    const includeFiles = options.includeFiles.split(" ");
+
+    const { fileCounts } = data;
+    filteredFileCounts = new Map(
+      Array.from(fileCounts).filter(([key]) => {
+        return includeFiles.includes(key);
+      })
+    );
+  }
+
+  console.log(
+    generateText({ ...data, fileCounts: filteredFileCounts }, options.threshold)
+  );
 
   if (fs.existsSync(dirPath)) {
     rimraf.sync(dirPath);
